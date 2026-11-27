@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Absensi QR — SDIT Annihayah</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Pembaca QR cadangan (dipakai bila peramban tidak punya BarcodeDetector) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <strong id="nama-sekolah">SDIT Annihayah</strong>
+      <small id="info-user"></small>
+    </div>
+    <button id="btn-keluar" class="ghost hidden" type="button">Keluar</button>
+  </header>
+
+  <main>
+    <!-- LOGIN -->
+    <section id="view-login" class="card login hidden">
+      <h2>Masuk Absensi</h2>
+      <form id="form-login">
+        <label>Nama pengguna
+          <input id="user" autocomplete="username" required>
+        </label>
+        <label>Kata sandi
+          <input id="pass" type="password" autocomplete="current-password" required>
+        </label>
+        <button id="btn-login" type="submit" class="primary">Masuk</button>
+        <p id="login-galat" class="galat"></p>
+      </form>
+    </section>
+
+    <nav id="tabs" class="tabs hidden">
+      <button class="tab active" data-tab="pindai" type="button">Pindai</button>
+      <button class="tab" data-tab="hari" type="button">Hari Ini</button>
+    </nav>
+
+    <!-- PINDAI -->
+    <section id="tab-pindai" class="hidden">
+      <div class="chips" role="group" aria-label="Kategori">
+        <button class="chip active" data-kat="Hadir" type="button">Hadir</button>
+        <button class="chip" data-kat="Sakit" type="button">Sakit</button>
+        <button class="chip" data-kat="Izin" type="button">Izin</button>
+      </div>
+
+      <div class="baris">
+        <label class="grow">QR guru
+          <select id="jenis">
+            <option value="masuk">Absen masuk</option>
+            <option value="pulang">Absen pulang</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="box-surat" class="card hidden">
+        <label>Surat sakit/izin (foto atau PDF)
+          <input id="surat" type="file" accept="image/*,application/pdf">
+        </label>
+        <p id="surat-info" class="muted"></p>
+      </div>
+
+      <div class="kamera">
+        <video id="video" playsinline muted></video>
+        <div id="sapaan" class="sapaan" aria-live="polite"></div>
+      </div>
+
+      <div id="kamera-galat" class="card galat hidden">
+        <p id="kamera-galat-teks"></p>
+        <button id="coba-kamera" type="button" class="primary">Coba Lagi</button>
+      </div>
+
+      <div id="status" class="status" aria-live="polite">Arahkan kartu QR ke kamera</div>
+
+      <h3>Baru dicatat</h3>
+      <ul id="terakhir" class="daftar"></ul>
+    </section>
+
+    <!-- HARI INI -->
+    <section id="tab-hari" class="hidden">
+      <div class="baris">
+        <h2 class="grow">Absensi <span id="tgl"></span></h2>
+        <button id="btn-muat" type="button" class="ghost">Muat ulang</button>
+        <button id="btn-alpha" type="button" class="danger hidden">Tandai Alpha</button>
+      </div>
+      <h3>Siswa</h3>
+      <div id="tabel-siswa" class="tabel-wrap"></div>
+      <h3>Guru</h3>
+      <div id="tabel-guru" class="tabel-wrap"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/scanner.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
