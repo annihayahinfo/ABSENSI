@@ -6,9 +6,10 @@
 const Pemindai = (() => {
   const cb = { hasil() {}, sapa() {}, progres() {}, sibuk() {}, galatKamera() {}, lampiranUlang() {} };
   const st = { video: null, stream: null, aktif: false, fase: '', gerak: 0, prev: null,
-               mulaiGerak: 0, batas: 0, kodeAktif: '', kedipWajib: true, memulai: false };
+               mulaiGerak: 0, batas: 0, kodeAktif: '', kedipWajib: true, memulai: false, sesi: 0 };
   const cool = {};
   let kategori = 'Hadir', jenis = 'masuk', lampiran = null;
+  let arah = 'environment';                 // 'environment' = kamera belakang, 'user' = kamera depan
   const POLA_QR = /^SIM\|[SG]\|/;
   const tidur = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -49,7 +50,7 @@ const Pemindai = (() => {
   // ---- Kamera ----
   async function bukaKamera() {
     const dasar = { width: { ideal: 1280 }, height: { ideal: 720 } };
-    const coba = [{ ...dasar, facingMode: { ideal: 'environment' } }, { facingMode: { ideal: 'environment' } }, true];
+    const coba = [{ ...dasar, facingMode: { ideal: arah } }, { facingMode: { ideal: arah } }, true];
     let galat = null;
     for (const video of coba) {
       try { return await navigator.mediaDevices.getUserMedia({ video: video, audio: false }); }
@@ -83,7 +84,7 @@ const Pemindai = (() => {
       try { await videoEl.play(); } catch (e) { /* diputar otomatis */ }
       st.aktif = true;
       cb.galatKamera('');
-      loop();
+      loop(++st.sesi);
     } catch (e) {
       cb.galatKamera(pesanGalat(e));
     } finally { st.memulai = false; }
@@ -97,8 +98,8 @@ const Pemindai = (() => {
   }
 
   // ---- Putaran utama ----
-  async function loop() {
-    while (st.aktif) {
+  async function loop(id) {
+    while (st.aktif && id === st.sesi) {
       try {
         if (st.fase === 'gerak') {
           await langkahGerak();
@@ -233,6 +234,14 @@ const Pemindai = (() => {
       if (k !== kategori) lampiran = null;
       kategori = k; jenis = j; st.kedipWajib = kedipWajib !== false;
     },
-    mulai, berhenti, siapkanLampiran, hapusLampiran
+    mulai, berhenti, siapkanLampiran, hapusLampiran,
+    /** Bergantian antara kamera belakang dan depan. Mengembalikan arah baru. */
+    async gantiKamera(videoEl) {
+      berhenti();
+      arah = arah === 'environment' ? 'user' : 'environment';
+      await mulai(videoEl);
+      return arah;
+    },
+    arahSaatIni() { return arah; }
   };
 })();
