@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Absen Siswa — SDIT Annihayah</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <strong id="nama-sekolah">SDIT Annihayah</strong>
+      <small>Absen Siswa (tanpa login)</small>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <p>Tunjukkan <b>kartu QR siswa</b> ke kamera, lalu gerakkan kepalamu saat diminta.</p>
+      <p class="muted">Halaman ini hanya mencatat kehadiran hari ini. Untuk izin atau sakit, hubungi wali kelas.</p>
+    </section>
+
+    <div class="baris">
+      <button id="ganti-kamera" class="ghost-gelap" type="button">Ganti kamera (depan / belakang)</button>
+    </div>
+
+    <div class="kamera">
+      <video id="video" playsinline muted></video>
+      <div id="sapaan" class="sapaan" aria-live="polite"></div>
+    </div>
+
+    <div id="kamera-galat" class="card galat hidden">
+      <p id="kamera-galat-teks"></p>
+      <button id="coba-kamera" type="button" class="primary">Coba Lagi</button>
+    </div>
+
+    <div id="status" class="status" aria-live="polite">Memuat…</div>
+    <div id="hasil" class="card hasil-siswa"></div>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/scanner.js"></script>
+  <script src="js/siswa.js"></script>
+</body>
+</html>
